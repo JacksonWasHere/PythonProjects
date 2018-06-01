@@ -1,0 +1,7 @@
+function solve(num,start,finish,extra){
+  if(num>=1){
+    solve(num-1,start,extra,finish)
+    move(start,finish)
+    solve(num-1,extra,finish,start)
+  }
+}
