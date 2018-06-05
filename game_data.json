@@ -1,0 +1,57 @@
+{
+    "games": {
+        "tohan": {
+            "11": {
+                "moves": 2047,
+                "solution": "10ab10d"
+            },
+            "1": {
+                "moves": 1,
+                "solution": "0ab0d"
+            },
+            "4": {
+                "moves": 15,
+                "solution": "3ab3d"
+            },
+            "7": {
+                "moves": 247,
+                "solution": "6ab6d"
+            },
+            "2": {
+                "moves": 4,
+                "solution": "1ab1d"
+            },
+            "3": {
+                "moves": 11,
+                "solution": "2ab2d"
+            },
+            "5": {
+                "moves": 57,
+                "solution": "4ab4d"
+            },
+            "9": {
+                "moves": 1013,
+                "solution": "8ab8d"
+            },
+            "10": {
+                "moves": 2036,
+                "solution": "9ab9d"
+            },
+            "8": {
+                "moves": 502,
+                "solution": "7ab7d"
+            },
+            "6": {
+                "moves": 120,
+                "solution": "5ab5d"
+            }
+        },
+        "ttt": {
+            "O wins": 2,
+            "ties": 0,
+            "X wins": 0,
+            "games": 1,
+            "name": "tictactoe"
+        }
+    }
+}

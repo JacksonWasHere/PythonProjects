@@ -1,0 +1,12 @@
+{
+  "users":{
+    "jackson":{
+      "id":0,
+      "password":"sarah"
+    },
+    "tali":{
+      "id":1,
+      "password":"floyd"
+    }
+  }
+}

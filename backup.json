@@ -1,0 +1,42 @@
+{
+  "people": [
+    {
+      "name": "John Doe",
+      "password": "4262884371164942261354262884"
+    }
+    ,
+    {
+      "name": "dad",
+      "password": "17111821428342"
+    }
+    ,
+    {
+      "name": "bob",
+      "password": "386139643736223861396"
+    }
+    ,
+    {
+      "name": "John Doe",
+      "password": "386139643736223861396"
+    }
+    ,
+    {
+      "name": "steve",
+      "password": "4890710466840544016394490561"
+    }
+    ,
+    {
+      "name": "tali",
+      "password": "155067414190131755480"
+    }
+  ],
+  "games":{
+    "ttt":{
+      "name":"tictactoe",
+      "games":0,
+      "O wins":0,
+      "X wins":0,
+      "ties":0
+    }
+  }
+}
