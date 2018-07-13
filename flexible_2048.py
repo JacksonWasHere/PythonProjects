@@ -66,49 +66,72 @@ def add_tile(board):
         board[x][y]=4
         return
     board[x][y]=2
-def swap_pieces(board,x,y,x1,y1):
+def swap_pieces(board,x,y,x1,y1,squished):
+
     #create variable to see if things change
     changed=False
+    if board[x1][y1]==0:
+        return changed
     #if 0 move it to new space
     if board[x][y]==0:
         board[x][y]=board[x1][y1]
         board[x1][y1]=0
         #update changed
         changed=True
-    #if the same then merge
-    elif board[x][y]==board[x1][y1]:
+    #if the same and it hasn't collapsed already then merge
+    elif board[x][y]==board[x1][y1] and not ((x,y) in squished):
         board[x][y]=board[x][y]+board[x1][y1]
         board[x1][y1]=0
+
+        squished.append((x,y))
         #update changed
         changed=True
     return changed
 def left(board,board_width,board_height):
+    #array to see if spot has been collapsed
+    collapsed=[]
+    #check if stuff changed
+    changed=False
     #loop through pieces
     for i in range(board_height-1):
         for j in range(board_width):
             #loop to find farthest left move location
             for x in range(i+1):
                 #if something changed then stop looping
-                if swap_pieces(board,x,j,i+1,j):
+                if swap_pieces(board,x,j,i+1,j,collapsed):
+                    changed=True
                     break
+    return changed
 def right(board,board_width,board_height):
+    collapsed=[]
+    changed=False
     for i in range(board_height-1):
         for j in range(board_width):
             for x in range(i+1):
-                if swap_pieces(board,-x-1,j,-i+(board_width-2),j):
+                if swap_pieces(board,-x-1,j,-i+(board_width-2),j,collapsed):
+                    changed=True
                     break
+    return changed
 def down(board,board_width,board_height):
+    collapsed=[]
+    changed=False
     for i in range(board_height):
         for j in range(board_width-1):
             for x in range(j+1):
-                if swap_pieces(board,i,-x-1,i,-j+(board_height-2)):
+                if swap_pieces(board,i,-x-1,i,-j+(board_height-2),collapsed):
+                    changed=True
                     break
+    return changed
 def up(board,board_width,board_height):
+    collapsed=[]
+    changed=False
     for i in range(board_height):
         for j in range(board_width-1):
             for x in range(j+1):
-                if swap_pieces(board,i,x,i,j+1):
+                if swap_pieces(board,i,x,i,j+1,collapsed):
+                    changed=True
                     break
+    return changed
 def game_loop():
 
     crashed = False
@@ -124,9 +147,9 @@ def game_loop():
 
     #this code is designed to test functionality
     # add_tilep(board,0,0)
-    add_tilep(board,1,0,2)
-    add_tilep(board,2,0,2)
-    add_tilep(board,3,0,4)
+    add_tilep(board,0,0,2)
+    # add_tilep(board,1,0,2)
+    # add_tilep(board,3,0,4)
 
     #add start tiles
     #add_tile(board)
@@ -144,17 +167,17 @@ def game_loop():
 
                 #check left movement
                 if event.key==pygame.K_LEFT:
-                    left(board,board_width,board_height)
-                    add_tile(board)
+                    if left(board,board_width,board_height):
+                        add_tile(board)
                 if event.key==pygame.K_RIGHT:
-                    right(board,board_width,board_height)
-                    add_tile(board)
+                    if right(board,board_width,board_height):
+                        add_tile(board)
                 if event.key==pygame.K_DOWN:
-                    down(board,board_width,board_height)
-                    add_tile(board)
+                    if down(board,board_width,board_height):
+                        add_tile(board)
                 if event.key==pygame.K_UP:
-                    up(board,board_width,board_height)
-                    add_tile(board)
+                    if up(board,board_width,board_height):
+                        add_tile(board)
         #draw stuff
         gameDisplay.fill(white)
 
