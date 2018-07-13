@@ -7,7 +7,7 @@ import math
 pygame.init()
 
 #important game variables
-display_width=400
+display_width=500
 display_height=600
 
 black=(0,0,0)
@@ -45,16 +45,8 @@ def base_log(base,n):
     if n==0:
         return 0
     return math.log(n)/math.log(base)
-def add_tilep(board,x,y):
-
-    #choose the tiles value
-    #90%:2
-    #10%:4
-    random_val=random.randrange(0,100)
-    # if random_val>=90:
-    #     board[x][y]=4
-    #     return
-    board[x][y]=2
+def add_tilep(board,x,y,val):
+    board[x][y]=val
 def add_tile(board):
     #get a random x,y in the board
     x=random.randrange(0,len(board))
@@ -75,28 +67,48 @@ def add_tile(board):
         return
     board[x][y]=2
 def swap_pieces(board,x,y,x1,y1):
+    #create variable to see if things change
+    changed=False
+    #if 0 move it to new space
     if board[x][y]==0:
         board[x][y]=board[x1][y1]
         board[x1][y1]=0
+        #update changed
+        changed=True
+    #if the same then merge
     elif board[x][y]==board[x1][y1]:
         board[x][y]=board[x][y]+board[x1][y1]
         board[x1][y1]=0
+        #update changed
+        changed=True
+    return changed
 def left(board,board_width,board_height):
+    #loop through pieces
     for i in range(board_height-1):
         for j in range(board_width):
-            swap_pieces(board,i,j,i+1,j)
+            #loop to find farthest left move location
+            for x in range(i+1):
+                #if something changed then stop looping
+                if swap_pieces(board,x,j,i+1,j):
+                    break
 def right(board,board_width,board_height):
     for i in range(board_height-1):
         for j in range(board_width):
-            swap_pieces(board,-i-1,j,-i+2,j)
+            for x in range(i+1):
+                if swap_pieces(board,-x-1,j,-i+(board_width-2),j):
+                    break
 def down(board,board_width,board_height):
     for i in range(board_height):
         for j in range(board_width-1):
-            swap_pieces(board,i,-j-1,i,-j+2)
+            for x in range(j+1):
+                if swap_pieces(board,i,-x-1,i,-j+(board_height-2)):
+                    break
 def up(board,board_width,board_height):
     for i in range(board_height):
         for j in range(board_width-1):
-            swap_pieces(board,i,j,i,j+1)
+            for x in range(j+1):
+                if swap_pieces(board,i,x,i,j+1):
+                    break
 def game_loop():
 
     crashed = False
@@ -109,10 +121,17 @@ def game_loop():
         board.append([])
         for j in range(board_height):
             board[i].append(0)
-    add_tilep(board,0,0)
-    add_tilep(board,1,0)
-    add_tilep(board,2,0)
-    add_tilep(board,3,0)
+
+    #this code is designed to test functionality
+    # add_tilep(board,0,0)
+    add_tilep(board,1,0,2)
+    add_tilep(board,2,0,2)
+    add_tilep(board,3,0,4)
+
+    #add start tiles
+    #add_tile(board)
+    #add_tile(board)
+
     while not crashed:
         #check all events
         for event in pygame.event.get():
@@ -125,20 +144,16 @@ def game_loop():
 
                 #check left movement
                 if event.key==pygame.K_LEFT:
-                    for x in range(board_width-1):
-                        left(board,board_width,board_height)
+                    left(board,board_width,board_height)
                     add_tile(board)
                 if event.key==pygame.K_RIGHT:
-                    for x in range(board_width-1):
-                        right(board,board_width,board_height)
+                    right(board,board_width,board_height)
                     add_tile(board)
                 if event.key==pygame.K_DOWN:
-                    for x in range(board_width-1):
-                        down(board,board_width,board_height)
+                    down(board,board_width,board_height)
                     add_tile(board)
                 if event.key==pygame.K_UP:
-                    for x in range(board_width-1):
-                        up(board,board_width,board_height)
+                    up(board,board_width,board_height)
                     add_tile(board)
         #draw stuff
         gameDisplay.fill(white)
