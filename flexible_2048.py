@@ -87,19 +87,49 @@ def swap_pieces(board,x,y,x1,y1,squished):
         #update changed
         changed=True
     return changed
-def left(board,board_width,board_height):
+def left(board,board_width,board_height,direction):
     #array to see if spot has been collapsed
     collapsed=[]
     #check if stuff changed
     changed=False
     #loop through pieces
-    for i in range(board_height-1):
+    for i in range(board_height-(1 if direction%2==0 else 0)):
         for j in range(board_width):
-            #loop to find farthest left move location
+            #keeps track of it's farthest left place
+            end=[(i+1,j),(i,j+1)]
+            #loop through all places it could go to
             for x in range(i+1):
-                #if something changed then stop looping
-                if swap_pieces(board,x,j,i+1,j,collapsed):
-                    changed=True
+                #this is the current piece to check
+                possible_x = [i-x, j-x, ]
+                newx = possible_x[direction]
+
+                if i==2 and j==3:
+                    print(newx)
+
+                #see if it can move to this place
+                if board[newx][j]==0 or (board[newx][j]==board[i+1][j] and (not ((newx,j) in collapsed))):
+                    #if it can then update the place it'll end
+                    end=(newx,j)
+                #if it can't move over
+                else:
+                    #maximize x
+                    x=i
+                #if we're at the end of the loop
+                if x==i:
+                    #check if it actually moved
+                    if not end==(i+1,j):
+                        if i==2 and j==3:
+                            print(str(board[i+1][j])+" Move to "+str(end)+" from "+str((i+1,j)))
+                        #let us know there was a change
+                        changed=True
+                        #see if it merges or just goes to a 0
+                        if not board[end[0]][end[1]]==0:
+                            #add the collapsed point to the list
+                            collapsed.append(end)
+                        #check how it moved then move it
+                        board[end[0]][end[1]] = board[i+1][j] if board[end[0]][end[1]]==0 else board[i+1][j]*2
+                        #adjust old position
+                        board[i+1][j]=0
                     break
     return changed
 def right(board,board_width,board_height):
@@ -108,7 +138,7 @@ def right(board,board_width,board_height):
     for i in range(board_height-1):
         for j in range(board_width):
             for x in range(i+1):
-                if swap_pieces(board,-x-1,j,-i+(board_width-2),j,collapsed):
+                if not swap_pieces(board,-i+(board_width-2)+x+1,j,-i+(board_width-2),j,collapsed):
                     changed=True
                     break
     return changed
@@ -128,7 +158,7 @@ def up(board,board_width,board_height):
     for i in range(board_height):
         for j in range(board_width-1):
             for x in range(j+1):
-                if swap_pieces(board,i,x,i,j+1,collapsed):
+                if swap_pieces(board,i,i+1-x-1,i,j+1,collapsed):
                     changed=True
                     break
     return changed
@@ -146,10 +176,23 @@ def game_loop():
             board[i].append(0)
 
     #this code is designed to test functionality
-    # add_tilep(board,0,0)
-    add_tilep(board,0,0,2)
-    # add_tilep(board,1,0,2)
-    # add_tilep(board,3,0,4)
+
+    add_tilep(board,1,0,2)
+    add_tilep(board,2,0,4)
+    add_tilep(board,3,0,2)
+
+    add_tilep(board,1,1,2)
+    add_tilep(board,2,1,2)
+    add_tilep(board,3,1,4)
+
+    add_tilep(board,1,2,2)
+    add_tilep(board,2,2,2)
+    add_tilep(board,3,2,2)
+
+    add_tilep(board,0,3,2)
+    add_tilep(board,1,3,4)
+    # add_tilep(board,2,3,2)
+    add_tilep(board,3,3,2)
 
     #add start tiles
     #add_tile(board)
@@ -178,6 +221,10 @@ def game_loop():
                 if event.key==pygame.K_UP:
                     if up(board,board_width,board_height):
                         add_tile(board)
+
+                if event.key==113:
+                    pygame.quit()
+                    quit()
         #draw stuff
         gameDisplay.fill(white)
 
@@ -185,17 +232,21 @@ def game_loop():
         tile_x=0
         tile_y=0
 
+        #size of tiles
+        draw_width=display_width/board_width
+        draw_height=(display_height-100)/board_height
+
         #loop through all tiles
         for row in board:
             for column in row:
                 #draw a rectangle at the x,y and select a color based on the log of the tile value
-                rectangle(tile_x,tile_y,100,100,colors[int(base_log(2,column))])
+                rectangle(tile_x,tile_y,draw_width,draw_height,colors[int(base_log(2,column))])
                 #display text
-                message_display(str(column),tile_x+50,tile_y+50,50)
+                message_display(str(column),tile_x+draw_width/2,tile_y+draw_height/2,int(draw_width/2))
                 #increment the y but keep it within range
-                tile_y=(tile_y+100)%400
+                tile_y=(tile_y+draw_height)%(display_height-100)
             #increment x but keep it in range
-            tile_x=(tile_x+100)%400
+            tile_x=(tile_x+draw_width)%display_width
         #update the display and set loop delay
         pygame.display.update()
         clock.tick(60)

@@ -31,6 +31,3 @@ class data_storage(object):
     def uploadData(self):
         with open(self.file, 'w') as outfile:
             json.dump(self.data, outfile, indent=4)
-
-testing = data_storage("game_data.json")
-print("-----"+str(testing.getDataAtPath("games/tohan/11/moves/"))+"-----")
