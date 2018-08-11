@@ -86,6 +86,7 @@ def game_loop():
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     x_change = 0
 
+
         x += x_change
         score += 1
         gameDisplay.fill(white)
